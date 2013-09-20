@@ -30,18 +30,17 @@ var WallpaperCustomizer = {
     }
   },
 
-  setWallpaperSetting: function wc_setWallpaperSetting(base64Image) {
+  setWallpaperSetting: function wc_setWallpaperSetting(blob) {
     var request = navigator.mozSettings.createLock().set({
-      'wallpaper.image': base64Image
+      'wallpaper.image': blob
     });
   },
 
   setWallpaper: function wc_setWallpaper(url) {
-    this.retrieveWallpaper(url, function(blob) {
-      this.setWallpaperSetting(blob).bind(this);
-      }, function onerrorRetrieving() {
-      console.log('Error retrieving the file ' + url);
-    }).bind(this);
+    this.retrieveWallpaper(url, this.setWallpaperSetting,
+      function onerrorRetrieving() {
+      console.error('Error retrieving the file ' + url);
+    });
   }
 };
 WallpaperCustomizer.init();

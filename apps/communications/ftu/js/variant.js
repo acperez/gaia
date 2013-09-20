@@ -53,7 +53,7 @@ var VariantManager = {
 
   CUSTOMIZERS: [
     '/ftu/js/customizers/wallpaper_customizer.js',
-    '/ftu/js/customizers/support_contact_customizer.js',
+    '/ftu/js/customizers/support_contacts_customizer.js',
     '/ftu/js/customizers/default_contacts_customizer.js'
   ],
 
