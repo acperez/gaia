@@ -356,11 +356,23 @@ var Contacts = (function() {
   };
 
   var callOrPick = function callOrPick(number) {
-    if (ActivityHandler.currentlyHandling) {
-      ActivityHandler.postPickSuccess({ number: number });
-    } else {
-      TelephonyHelper.call(number);
-    }
+    LazyLoader.load('/dialer/js/mmi.js', function mmiLoaded() {
+      if (ActivityHandler.currentlyHandling) {
+        ActivityHandler.postPickSuccess({ number: number });
+      } else if (MmiManager.isMMI(number)) {
+        // For security reasons we cannot directly call MmiManager.send(). We
+        // need to show the MMI number in the dialer instead.
+        new MozActivity({
+          name: 'dial',
+          data: {
+            type: 'webtelephony/number',
+            number: number
+          }
+        });
+      } else {
+        TelephonyHelper.call(number);
+      }
+    });
   };
 
   var handleBack = function handleBack() {
@@ -646,16 +658,7 @@ var Contacts = (function() {
       '/contacts/js/utilities/status.js',
       '/contacts/js/utilities/overlay.js',
       '/contacts/js/utilities/dom.js',
-      '/contacts/js/search.js',
-      '/shared/style_unstable/progress_activity.css',
-      '/shared/style/status.css',
-      '/shared/style/switches.css',
-      '/shared/style/confirm.css',
-      '/contacts/style/fixed_header.css',
-      '/contacts/style/animations.css',
-      '/facebook/style/curtain_frame.css',
-      '/contacts/style/status.css',
-      '/contacts/style/fb_extensions.css'
+      '/contacts/js/search.js'
     ];
 
     LazyLoader.load(lazyLoadFiles, function() {
